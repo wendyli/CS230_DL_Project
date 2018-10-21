@@ -34,12 +34,18 @@ def main():
     outputdirs = ['train/', 'test/', 'validation/']
     makeDatabaseDirectories()
     
+    # Read in JPEG compression rate
     jpegCompression = 100
     if len(sys.argv) > 1:
         jpegCompression = int(sys.argv[1])
     
-    print 'JPEG Compression: ', jpegCompression
+    # Determine whether or not to pull from server
+    pullFromServer = True
+    if len(sys.argv) > 2:
+        pullFromServer = int(sys.argv[2])
 
+    print 'Pull From Server: ', pullFromServer
+    
     index = 0
     for filename in filenames:
 
@@ -47,25 +53,25 @@ def main():
         directory = filename.split('_')[0]
         os.system('mkdir {}'.format(directory))
 
-        # copy over the files
-        with open(filename) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            line_count = 0
-            for row in csv_reader:
-                if line_count > 15: # Change as necessary
-                    break
-                file = row[0].split('.')[0] # get rid of .jpg
-                cmd = ' wget -N -c http://193.205.194.113/RAISE/NEF/{}.NEF -P {}'.format(file, directory)
-                print cmd
-                os.system(cmd)
-                line_count = line_count + 1
+        if pullFromServer:
+            # copy over the files
+            with open(filename) as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=',')
+                line_count = 0
+                for row in csv_reader:
+                    if line_count > 15: # Change as necessary
+                        break
+                    file = row[0].split('.')[0] # get rid of .jpg
+                    cmd = ' wget -N -c http://193.205.194.113/RAISE/NEF/{}.NEF -P {}'.format(file, directory)
+                    print cmd
+                    os.system(cmd)
+                    line_count = line_count + 1
+            # Convert .NEF files into 8-bit RGB images and save in "results" dir
+            # Using the LibRaw API to extract the iamge data and the SFML framework
+            # to save out the image as a PNG
+            cmd = 'NEFConverter/NEFConverter/bin/NEFConverter' + ' ' + directory + '/'
+            os.system(cmd)
 
-
-        # Convert .NEF files into 8-bit RGB images and save in "results" dir
-        # Using the LibRaw API to extract the iamge data and the SFML framework
-        # to save out the image as a PNG
-        cmd = 'NEFConverter/NEFConverter/bin/NEFConverter' + ' ' + directory + '/'
-        os.system(cmd)
 
         # Load up all the converted images
         result_dir = directory + '/results/'
