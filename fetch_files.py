@@ -69,7 +69,6 @@ def pullAndConvert(database, filename, directory, outputdir, jpegCompression):
                 line_count = 0
 
 
-
 # This function takes all the CGI images, shuffles them, and allocates them
 # based on the specified proportions to the train, test and validation directories
 def construct_CGI(source_CG, target_dir, nb_per_class = 1800, validation_proportion = 0.1, test_proportion = 0.2):
@@ -135,11 +134,6 @@ def main():
     assert isinstance(jpegCompression, int)
     print 'JPEG Compression: ', jpegCompression
     
-    # Determine whether or not to pull from server
-    pullFromServer = input("Read from server? 1/0: ")
-    assert isinstance(pullFromServer, int)
-    print 'Pull From Server: ', pullFromServer
-    
     # Make sure the database directory exists
     make_dirs(database)
     
@@ -163,7 +157,6 @@ def main():
         os.system('mkdir {}'.format(directory))
 
         # Download RAW images from RAISE and convert to 8 bit RGB
-        # if pullFromServer:
         pullAndConvert(database, filename, directory, outputdirs[index], jpegCompression)
         index = index+1
 
