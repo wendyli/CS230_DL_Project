@@ -7,7 +7,7 @@ def readme():
 
 setup(name='CGvsPhoto',
       version='0.0.3',
-      description='A deep-learning method for distinguishing computer graphics from real photogrphic images',
+      description='A deep-learning method for distinguishing computer graphics from real photographic images',
       long_description=readme(),
       url='https://github.com/NicoRahm/CGvsPhoto',
       author='Nicolas Rahmouni',
