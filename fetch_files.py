@@ -104,6 +104,10 @@ def main():
     # Make sure the database directory exists
     make_dirs(database)
     
+    # Add database to gitignore
+    with open('.gitignore', 'a') as gitignore:
+        gitignore.write('\n' + database)
+    
     index = 0
     for filename in filenames:
         # make a directory
