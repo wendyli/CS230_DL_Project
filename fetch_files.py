@@ -7,27 +7,8 @@ import os, os.path
 import random
 import shutil
 from CGvsPhoto import image_loader as il
+from CGvsPhoto.construct_DB import make_dirs
 from CGvsPhoto.construct_DB import load_images_from_dir
-
-def makeDatabaseDirectories():
-    # Outer database
-    os.system('mkdir {}'.format('Database'))
-    
-    # Train test and validation
-    os.system('mkdir {}'.format('Database/train'))
-    os.system('mkdir {}'.format('Database/test'))
-    os.system('mkdir {}'.format('Database/validation'))
-    
-    # Real photos
-    os.system('mkdir {}'.format('Database/train/Real'))
-    os.system('mkdir {}'.format('Database/test/Real'))
-    os.system('mkdir {}'.format('Database/validation/Real'))
-    
-    # CG Photos
-    os.system('mkdir {}'.format('Database/train/CGG'))
-    os.system('mkdir {}'.format('Database/test/CGG'))
-    os.system('mkdir {}'.format('Database/validation/CGG'))
-
 
 # This function pulls in all the images from
 # the server and converts them from .NEF raw
@@ -76,7 +57,7 @@ def main():
     outputdirs = ['train/', 'test/', 'validation/']
     
     # Make sure the database directory exists
-    makeDatabaseDirectories()
+    make_dirs('Database/')
     
     # Read in JPEG compression rate
     jpegCompression = input("Enter JPEG Compression Value: ")
