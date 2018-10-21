@@ -41,9 +41,6 @@ int process_image(std::string path, std::string file)
     // Open the file and read the metadata
     iProcessor.open_file((path + file).c_str());
     
-    // The metadata are accessible through data fields of the class
-    printf("Image size: %d x %d\n",iProcessor.imgdata.sizes.width,iProcessor.imgdata.sizes.height);
-    
     // Let us unpack the image
     iProcessor.unpack();
 
@@ -53,8 +50,6 @@ int process_image(std::string path, std::string file)
     // Extract bitmap image
     int err = 0;
     libraw_processed_image_t *image = iProcessor.dcraw_make_mem_image(&err);
-    printf("PROCESSED IMAGE: %i %i | %i %i %i\n", image->width, image->height, image->colors, image->bits, image->data_size);
-    printf("ERROR: %i\n", err);
     
     // Make sure all the data is correct
     assert(err == 0);
@@ -114,7 +109,7 @@ int loopImages(std::string path)
 
 int main(int argc, const char * argv[])
 {
-    std::string path(argv[1]); //"/Users/Chris/Desktop/NEFImages/";
+    std::string path(argv[1]); 
     loopImages(path.c_str());
     return 0;
 }
