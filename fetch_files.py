@@ -35,7 +35,7 @@ def pullAndConvert(filename, directory):
 
 # Convert the images to jpeg with the given compression ration,
 # and move them to their final position in the database
-def compressAndMove(directory, outputdir, jpegCompression):
+def compressAndMove(database, directory, outputdir, jpegCompression):
     # Load up all the converted images
     result_dir = directory + '/results/'
     final_images = load_images_from_dir(directory + '/results', shuffle = True)
@@ -43,7 +43,7 @@ def compressAndMove(directory, outputdir, jpegCompression):
         
     # Compress images and save in final database location
     for i in range(numImages):
-        outfile = 'Database/' + outputdir + 'Real/' + final_images[i]
+        outfile = database + outputdir + 'Real/' + final_images[i]
         print outfile
         image = Image.open(result_dir + final_images[i])
         image.save(outfile, "JPEG", quality=jpegCompression)
@@ -85,8 +85,11 @@ def main():
     filenames = ['data/train_file.csv', 'data/test_file.csv', 'data/validation_file.csv']
     outputdirs = ['train/', 'test/', 'validation/']
     
-    # Make sure the database directory exists
-    make_dirs('Database/')
+    # Choose a name for your database
+    database = input("Choose a name for your database (Don't forget to add quotes ;-): ")
+    assert isinstance(database, str)
+    print 'Database: ', database
+    database = database + '/'
     
     # Read in JPEG compression rate
     jpegCompression = input("Enter JPEG Compression Value: ")
@@ -97,6 +100,9 @@ def main():
     pullFromServer = input("Read from server? 1/0: ")
     assert isinstance(pullFromServer, int)
     print 'Pull From Server: ', pullFromServer
+    
+    # Make sure the database directory exists
+    make_dirs(database)
     
     index = 0
     for filename in filenames:
@@ -109,11 +115,11 @@ def main():
             pullAndConvert(filename, directory)
 
         # Compress the RGB images and move to database
-        compressAndMove(directory, outputdirs[index], jpegCompression)
+        compressAndMove(database, directory, outputdirs[index], jpegCompression)
         index = index+1
 
     # Finally, write out CGI Images
-    construct_CGI('SourceCG/', 'Database/', nb_per_class = 1800, validation_proportion = 0.1, test_proportion = 0.2)
+    construct_CGI('SourceCG/', database, nb_per_class = 1800, validation_proportion = 0.1, test_proportion = 0.2)
 
 if __name__== "__main__":
     main()
