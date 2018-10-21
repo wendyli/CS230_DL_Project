@@ -10,6 +10,11 @@ from CGvsPhoto import image_loader as il
 from CGvsPhoto.construct_DB import make_dirs
 from CGvsPhoto.construct_DB import load_images_from_dir
 
+def deleteFiles(dir):
+    fileList = os.listdir(dir)
+    for fileName in fileList:
+        os.remove(dirPath+'/'+fileName)
+
 # This function pulls in all the images from
 # the server and converts them from .NEF raw
 # format to an initial PNG format
@@ -57,6 +62,11 @@ def construct_CGI(source_CG, target_dir, nb_per_class = 1800, validation_proport
     test_dir = target_dir + 'test/'
     validation_dir = target_dir + 'validation/'
     
+    # Clear out directories
+    deleteFiles(train_dir + 'CGG')
+    deleteFiles(test_dir + 'CGG')
+    deleteFiles(validation_dir + 'CGG')
+
     image_CG = load_images_from_dir(source_CG, shuffle = True)
     
     nb_train = int(nb_per_class*(1 - validation_proportion - test_proportion))
@@ -81,10 +91,6 @@ def construct_CGI(source_CG, target_dir, nb_per_class = 1800, validation_proport
 # Program Entry Point
 def main():
     
-    # Get files
-    filenames = ['data/train_file.csv', 'data/test_file.csv', 'data/validation_file.csv']
-    outputdirs = ['train/', 'test/', 'validation/']
-    
     # Choose a name for your database
     database = input("Choose a name for your database (Don't forget to add quotes ;-): ")
     assert isinstance(database, str)
@@ -104,9 +110,17 @@ def main():
     # Make sure the database directory exists
     make_dirs(database)
     
-    # Add database to gitignore
+    # Add database to gitignore so we don't accidentally
+    # upload large textures to git
     with open('.gitignore', 'a') as gitignore:
         gitignore.write('\n' + database)
+    
+    # Get files
+    filenames = ['data/train_file.csv', 'data/test_file.csv', 'data/validation_file.csv']
+    outputdirs = ['train/', 'test/', 'validation/']
+
+    # Write out CGI Images first, get them out of the way
+    construct_CGI('SourceCG/', database, nb_per_class = 1800, validation_proportion = 0.1, test_proportion = 0.2)
     
     index = 0
     for filename in filenames:
@@ -121,9 +135,6 @@ def main():
         # Compress the RGB images and move to database
         compressAndMove(database, directory, outputdirs[index], jpegCompression)
         index = index+1
-
-    # Finally, write out CGI Images
-    construct_CGI('SourceCG/', database, nb_per_class = 1800, validation_proportion = 0.1, test_proportion = 0.2)
 
 if __name__== "__main__":
     main()
