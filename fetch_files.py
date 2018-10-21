@@ -74,6 +74,8 @@ def main():
     # Get files
     filenames = ['data/train_file.csv', 'data/test_file.csv', 'data/validation_file.csv']
     outputdirs = ['train/', 'test/', 'validation/']
+    
+    # Make sure the database directory exists
     makeDatabaseDirectories()
     
     # Read in JPEG compression rate
@@ -92,9 +94,11 @@ def main():
         directory = filename.split('_')[0]
         os.system('mkdir {}'.format(directory))
 
+        # Download RAW images from RAISE and convert to 8 bit RGB
         if pullFromServer:
             pullAndConvert(filename, directory)
         
+        # Compress the RGB images and move to database
         compressAndMove(directory, outputdirs[index], jpegCompression)
         index = index+1
 
