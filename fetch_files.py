@@ -13,7 +13,8 @@ from CGvsPhoto.construct_DB import load_images_from_dir
 def deleteFiles(dir):
     fileList = os.listdir(dir)
     for fileName in fileList:
-        os.remove(dir+'/'+fileName)
+        if not os.path.isdir(fileName):
+            os.remove(dir+'/'+fileName)
 
 
 # Convert the images to jpeg with the given compression ration,
