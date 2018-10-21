@@ -98,7 +98,9 @@ int loopImages(std::string path)
     
     while ((entry = readdir(dp)))
     {
-        process_image(path, entry->d_name);
+        if (strlen(entry->d_name) > 2) {
+            process_image(path, entry->d_name);
+        }
     }
     
     closedir(dp);
