@@ -2,3 +2,6 @@ SourceCG/
 SourceReal/
 Database/
 PatchedDatabase/
+data/train
+data/test
+data/validation
