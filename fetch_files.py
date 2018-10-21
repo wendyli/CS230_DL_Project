@@ -51,7 +51,7 @@ def pullAndConvert(database, filename, directory, outputdir, jpegCompression):
             # Convert in batches. Every fifteen images, convert, compress, and move to database,
             # and then clean up the raw that have already been downloaded. That way the harddrive
             # is not overwhelmed
-            if line_count > 1:
+            if line_count >= 15:
                 # Convert .NEF files into 8-bit RGB images and save in "results" dir
                 # Using the LibRaw API to extract the iamge data and the SFML framework
                 # to save out the image as a PNG
