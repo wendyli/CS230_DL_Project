@@ -771,7 +771,7 @@ class Model:
 
       fpr, tpr, _ = roc_curve(y_test, scores)
 
-      filename = '/Users/Chris/Desktop/CS230/Projects/CGvsPhoto/summaries/' + run_name + '.pkl'
+      filename = '../summaries/' + run_name + '.pkl'
       print('Saving tpr and fpr in file : ' + filename)
       pickle.dump((fpr, tpr), open(filename, 'wb'))
 
@@ -1148,7 +1148,7 @@ class Model:
     print(0.5 + np.array(scores)/np.max(np.array(scores)))
     print(thresholds)
 
-    filename = '/Users/Chris/Desktop/CS230/Projects/CGvsPhoto/summaries/' + test_name + '.pkl'
+    filename = '../summaries/' + test_name + '.pkl'
     print('Saving tpr and fpr in file : ' + filename)
     pickle.dump((fpr,tpr), open(filename, 'wb'))
 

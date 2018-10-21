@@ -8,7 +8,7 @@ def main():
     database = database + '/'
 
     
-    retrain = input("Should we retrain the model? 1/0 ")
+    retrain = input("Should we retrain the model? Enter 1/0: ")
     assert isinstance(retrain, int)
     
 
@@ -17,12 +17,14 @@ def main():
                   config = 'Config1', filters = [32, 64],
                   feature_extractor = 'Stats', batch_size = 50)
 
+                  
     if retrain > 0:
         print 'Training Model....'
         model.train(nb_train_batch = 1500,
                     nb_test_batch = 80,
                     nb_validation_batch = 40)
 
+    
     print 'Testing Model...'
     test_data_path = database + '/test/'
     model.test_total_images(test_data_path = test_data_path,
