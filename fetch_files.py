@@ -49,6 +49,8 @@ def compressAndMove(directory, outputdir, jpegCompression):
         image.save(outfile, "JPEG", quality=jpegCompression)
 
 
+# This function takes all the CGI images, shuffles them, and allocates them
+# based on the specified proportions to the train, test and validation directories
 def construct_CGI(source_CG, target_dir, nb_per_class = 1800, validation_proportion = 0.1, test_proportion = 0.2):
 
     train_dir = target_dir + 'train/'
@@ -105,13 +107,13 @@ def main():
         # Download RAW images from RAISE and convert to 8 bit RGB
         if pullFromServer:
             pullAndConvert(filename, directory)
-        
+
         # Compress the RGB images and move to database
         compressAndMove(directory, outputdirs[index], jpegCompression)
         index = index+1
 
     # Finally, write out CGI Images
-    construct_CGI('SourceCG', 'Database', nb_per_class = 1800, validation_proportion = 0.1, test_proportion = 0.2)
+    construct_CGI('SourceCG/', 'Database/', nb_per_class = 1800, validation_proportion = 0.1, test_proportion = 0.2)
 
 if __name__== "__main__":
     main()
