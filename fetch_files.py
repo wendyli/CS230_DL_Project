@@ -49,6 +49,33 @@ def compressAndMove(directory, outputdir, jpegCompression):
         image.save(outfile, "JPEG", quality=jpegCompression)
 
 
+def construct_CGI(source_CG, target_dir, nb_per_class = 1800, validation_proportion = 0.1, test_proportion = 0.2):
+
+    train_dir = target_dir + 'train/'
+    test_dir = target_dir + 'test/'
+    validation_dir = target_dir + 'validation/'
+    
+    image_CG = load_images_from_dir(source_CG, shuffle = True)
+    
+    nb_train = int(nb_per_class*(1 - validation_proportion - test_proportion))
+    nb_test = int(nb_per_class*test_proportion)
+    nb_validation = int(nb_per_class*validation_proportion)
+    
+    for i in range(nb_train):
+        shutil.copyfile(source_CG + image_CG[i], train_dir + 'CGG/' + image_CG[i])
+    print(str(nb_train) + ' training CG images imported for each class')
+
+    for i in range(nb_train, nb_train + nb_validation):
+        shutil.copyfile(source_CG + image_CG[i], validation_dir + 'CGG/' + image_CG[i])
+    print(str(nb_validation) + ' validation CG images imported for each class')
+
+    for i in range(nb_train + nb_validation, nb_train + nb_validation + nb_test):
+        shutil.copyfile(source_CG + image_CG[i], test_dir + 'CGG/' + image_CG[i])
+    print(str(nb_test) + ' testing CG images imported for each class')
+
+    print("CG Images all moved")
+
+
 # Program Entry Point
 def main():
     
@@ -83,6 +110,8 @@ def main():
         compressAndMove(directory, outputdirs[index], jpegCompression)
         index = index+1
 
-   
+    # Finally, write out CGI Images
+    construct_CGI('SourceCG', 'Database', nb_per_class = 1800, validation_proportion = 0.1, test_proportion = 0.2)
+
 if __name__== "__main__":
     main()
