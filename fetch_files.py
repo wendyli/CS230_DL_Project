@@ -51,7 +51,27 @@ def pullAndConvert(filename, directory):
     cmd = 'NEFConverter/NEFConverter/bin/NEFConverter' + ' ' + directory + '/'
     os.system(cmd)
 
+
+# Convert the images to jpeg with the given compression ration,
+# and move them to their final position in the database
+def compressAndMove(directory, outputdir, jpegCompression):
+    # Load up all the converted images
+    result_dir = directory + '/results/'
+    final_images = load_images_from_dir(directory + '/results', shuffle = True)
+    numImages = len(final_images)
+        
+    # Compress images and save in final database location
+    for i in range(numImages):
+        outfile = 'Database/' + outputdir + 'Real/' + final_images[i]
+        print outfile
+        image = Image.open(result_dir + final_images[i])
+        image.save(outfile, "JPEG", quality=jpegCompression)
+
+
+# Program Entry Point
 def main():
+    
+    # Get files
     filenames = ['data/train_file.csv', 'data/test_file.csv', 'data/validation_file.csv']
     outputdirs = ['train/', 'test/', 'validation/']
     makeDatabaseDirectories()
@@ -68,26 +88,14 @@ def main():
     
     index = 0
     for filename in filenames:
-
         # make a directory
         directory = filename.split('_')[0]
         os.system('mkdir {}'.format(directory))
 
         if pullFromServer:
             pullAndConvert(filename, directory)
-
-        # Load up all the converted images
-        result_dir = directory + '/results/'
-        final_images = load_images_from_dir(directory + '/results', shuffle = True)
-        numImages = len(final_images)
-
-        # Compress images and save in final database location
-        for i in range(numImages):
-            outfile = 'Database/' + outputdirs[index] + 'Real/' + final_images[i]
-            print outfile
-            image = Image.open(result_dir + final_images[i])
-            image.save(outfile, "JPEG", quality=jpegCompression)
-
+        
+        compressAndMove(directory, outputdirs[index], jpegCompression)
         index = index+1
 
    
