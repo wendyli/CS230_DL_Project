@@ -6,6 +6,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 import os, os.path
 import random
 import shutil
+from CGvsPhoto import Database_loader
 from CGvsPhoto import image_loader as il
 from CGvsPhoto.construct_DB import make_dirs
 from CGvsPhoto.construct_DB import load_images_from_dir
@@ -38,10 +39,12 @@ def compressAndMove(database, directory, outputdir, jpegCompression):
 # format to an initial PNG format
 def pullAndConvert(database, filename, directory, outputdir, jpegCompression):
     # copy over the files
+    size = os.path.getsize(filename)
     with open(filename) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
         for row in csv_reader:
+            size -= len(row)
             file = row[0].split('.')[0] # get rid of .jpg
             cmd = ' wget -N -c http://193.205.194.113/RAISE/NEF/{}.NEF -P {}'.format(file, directory)
             print cmd
@@ -51,7 +54,7 @@ def pullAndConvert(database, filename, directory, outputdir, jpegCompression):
             # Convert in batches. Every fifteen images, convert, compress, and move to database,
             # and then clean up the raw that have already been downloaded. That way the harddrive
             # is not overwhelmed
-            if line_count >= 15:
+            if line_count >= 15 or not size: # When size == 0, we know we are on the last line
                 # Convert .NEF files into 8-bit RGB images and save in "results" dir
                 # Using the LibRaw API to extract the iamge data and the SFML framework
                 # to save out the image as a PNG
@@ -101,6 +104,23 @@ def construct_CGI(source_CG, target_dir, nb_per_class = 1800, validation_proport
     print("CG Images all moved")
 
 
+def createPatchedDatabase(database):
+    # wanted size for the patches
+    image_size = 100
+    
+    # directory to store the patch database
+    target_patches = 'Patched' + database
+    
+    # create a database manager
+    DB = Database_loader(database, image_size, only_green=False, rand_crop = True)
+    
+    # export a patch database
+    DB.export_database(target_patches,
+                       nb_train = 1000,
+                       nb_test = 800,
+                       nb_validation = 100)
+
+
 # Program Entry Point
 def main():
     
@@ -134,7 +154,8 @@ def main():
 
     # Write out CGI Images first, get them out of the way
     construct_CGI('SourceCG/', database, nb_per_class = 1800, validation_proportion = 0.1, test_proportion = 0.2)
-    
+
+    # Get real images for train, test, and validation
     index = 0
     for filename in filenames:
         # make a directory
@@ -145,6 +166,9 @@ def main():
         # if pullFromServer:
         pullAndConvert(database, filename, directory, outputdirs[index], jpegCompression)
         index = index+1
+
+    # Generate Patched Database
+    createPatchedDatabase(database)
 
 if __name__== "__main__":
     main()
