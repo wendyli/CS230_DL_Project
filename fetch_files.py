@@ -13,29 +13,7 @@ from CGvsPhoto.construct_DB import load_images_from_dir
 def deleteFiles(dir):
     fileList = os.listdir(dir)
     for fileName in fileList:
-        os.remove(dirPath+'/'+fileName)
-
-# This function pulls in all the images from
-# the server and converts them from .NEF raw
-# format to an initial PNG format
-def pullAndConvert(filename, directory):
-    # copy over the files
-    with open(filename) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        line_count = 0
-        for row in csv_reader:
-            if line_count > 15: # Change as necessary
-                break
-            file = row[0].split('.')[0] # get rid of .jpg
-            cmd = ' wget -N -c http://193.205.194.113/RAISE/NEF/{}.NEF -P {}'.format(file, directory)
-            print cmd
-            os.system(cmd)
-            line_count = line_count + 1
-    # Convert .NEF files into 8-bit RGB images and save in "results" dir
-    # Using the LibRaw API to extract the iamge data and the SFML framework
-    # to save out the image as a PNG
-    cmd = 'NEFConverter/NEFConverter/bin/NEFConverter' + ' ' + directory + '/'
-    os.system(cmd)
+        os.remove(dir+'/'+fileName)
 
 
 # Convert the images to jpeg with the given compression ration,
@@ -45,13 +23,48 @@ def compressAndMove(database, directory, outputdir, jpegCompression):
     result_dir = directory + '/results/'
     final_images = load_images_from_dir(directory + '/results', shuffle = True)
     numImages = len(final_images)
-        
+    
     # Compress images and save in final database location
     for i in range(numImages):
         outfile = database + outputdir + 'Real/' + final_images[i]
         print outfile
         image = Image.open(result_dir + final_images[i])
         image.save(outfile, "JPEG", quality=jpegCompression)
+
+
+# This function pulls in all the images from
+# the server and converts them from .NEF raw
+# format to an initial PNG format
+def pullAndConvert(database, filename, directory, outputdir, jpegCompression):
+    # copy over the files
+    with open(filename) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        for row in csv_reader:
+            file = row[0].split('.')[0] # get rid of .jpg
+            cmd = ' wget -N -c http://193.205.194.113/RAISE/NEF/{}.NEF -P {}'.format(file, directory)
+            print cmd
+            os.system(cmd)
+            line_count = line_count + 1
+            
+            # Convert in batches. Every fifteen images, convert, compress, and move to database,
+            # and then clean up the raw that have already been downloaded. That way the harddrive
+            # is not overwhelmed
+            if line_count > 5:
+                # Convert .NEF files into 8-bit RGB images and save in "results" dir
+                # Using the LibRaw API to extract the iamge data and the SFML framework
+                # to save out the image as a PNG
+                cmd = 'NEFConverter/NEFConverter/bin/NEFConverter' + ' ' + directory + '/'
+                os.system(cmd)
+                
+                # Compress the RGB images and move to database
+                compressAndMove(database, directory, outputdir, jpegCompression)
+                
+                # Cleanup
+                deleteFiles(directory + '/results')
+                deleteFiles(directory)
+                line_count = 0
+
 
 
 # This function takes all the CGI images, shuffles them, and allocates them
@@ -129,11 +142,8 @@ def main():
         os.system('mkdir {}'.format(directory))
 
         # Download RAW images from RAISE and convert to 8 bit RGB
-        if pullFromServer:
-            pullAndConvert(filename, directory)
-
-        # Compress the RGB images and move to database
-        compressAndMove(database, directory, outputdirs[index], jpegCompression)
+        # if pullFromServer:
+        pullAndConvert(database, filename, directory, outputdirs[index], jpegCompression)
         index = index+1
 
 if __name__== "__main__":
