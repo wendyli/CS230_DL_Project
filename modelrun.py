@@ -6,14 +6,16 @@ def main():
     database = input("Enter your database (Don't forget to add quotes ;-): ")
     assert isinstance(database, str)
     database = database + '/'
+    patched_database = 'Patched' + database
 
     
     retrain = input("Should we retrain the model? Enter 1/0: ")
     assert isinstance(retrain, int)
     
 
+    # Create the model based on the *Patched* data
     print 'Creating Model.....'
-    model = Model(database_path = database, image_size = 100,
+    model = Model(database_path = patched_database, image_size = 100,
                   config = 'Config1', filters = [32, 64],
                   feature_extractor = 'Stats', batch_size = 50)
 
@@ -25,8 +27,9 @@ def main():
                     nb_validation_batch = 40)
 
     
+    # You must test on the FULL IMAGE version of the database
     print 'Testing Model...'
-    test_data_path = database + '/test/'
+    test_data_path = 'RawrDatabase/test/'
     model.test_total_images(test_data_path = test_data_path,
                             nb_images = 720, decision_rule = 'weighted_vote')
 

@@ -735,7 +735,8 @@ class Model:
             batch_clock = time.time()
       
       print('   saving validation accuracy...')
-      file = open(acc_name, 'w', newline='')
+      with open(acc_name, 'w') as csvfile:
+        file = csvfile.read()
 
       try:
           writer = csv.writer(file)
@@ -771,7 +772,7 @@ class Model:
 
       fpr, tpr, _ = roc_curve(y_test, scores)
 
-      filename = '../summaries/' + run_name + '.pkl'
+      filename = 'summaries/' + run_name + '.pkl'
       print('Saving tpr and fpr in file : ' + filename)
       pickle.dump((fpr, tpr), open(filename, 'wb'))
 
@@ -1148,7 +1149,7 @@ class Model:
     print(0.5 + np.array(scores)/np.max(np.array(scores)))
     print(thresholds)
 
-    filename = '../summaries/' + test_name + '.pkl'
+    filename = 'summaries/' + test_name + '.pkl'
     print('Saving tpr and fpr in file : ' + filename)
     pickle.dump((fpr,tpr), open(filename, 'wb'))
 
