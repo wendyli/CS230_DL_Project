@@ -115,9 +115,9 @@ def createPatchedDatabase(database):
     
     # export a patch database
     DB.export_database(target_patches,
-                       nb_train = 1000,
-                       nb_test = 800,
-                       nb_validation = 100)
+                       nb_train = 10000,
+                       nb_test = 8000,
+                       nb_validation = 1000)
 
 
 # Program Entry Point
@@ -128,20 +128,21 @@ def main():
     assert isinstance(database, str)
     print 'Database: ', database
     database = database + '/'
-    
+
     # Read in JPEG compression rate
     jpegCompression = input("Enter JPEG Compression Value: ")
     assert isinstance(jpegCompression, int)
     print 'JPEG Compression: ', jpegCompression
-    
+
     # Make sure the database directory exists
     make_dirs(database)
-    
+
     # Add database to gitignore so we don't accidentally
     # upload large textures to git
     with open('.gitignore', 'a') as gitignore:
         gitignore.write('\n' + database)
-    
+        gitignore.write('\n' + 'Patched' + database)
+
     # Get files
     filenames = ['data/train_file.csv', 'data/test_file.csv', 'data/validation_file.csv']
     outputdirs = ['train/', 'test/', 'validation/']
