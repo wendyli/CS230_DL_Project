@@ -1,6 +1,18 @@
 from CGvsPhoto import Model
+import os
 
 def main():
+    
+    # Fix Config
+    cwd = os.getcwd()
+    config = open('config.ini', 'r+')
+    config.truncate(0) # need '0' when using r+
+    config.write('[Config1]\n')
+    config.write(cwd + '/weights\n')
+    config.write(cwd + '/summaries\n')
+    config.write(cwd + '/visualization\n')
+    config.close()
+
 
     # Enter the database you are working with
     database = input("Enter your database (Don't forget to add quotes ;-): ")
@@ -29,7 +41,7 @@ def main():
     
     # You must test on the FULL IMAGE version of the database
     print 'Testing Model...'
-    test_data_path = 'RawrDatabase/test/'
+    test_data_path = database + '/test/'
     model.test_total_images(test_data_path = test_data_path,
                             nb_images = 720, decision_rule = 'weighted_vote')
 

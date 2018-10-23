@@ -735,18 +735,14 @@ class Model:
             batch_clock = time.time()
       
       print('   saving validation accuracy...')
-      with open(acc_name, 'w') as csvfile:
-        file = csvfile.read()
-
-      try:
-          writer = csv.writer(file)
-       
-          for v in validation_accuracy:
-            writer.writerow([str(v)])
-      finally:
-
-          file.close()
-          print('   done.')
+      with open(acc_name, 'w') as file:
+          try:
+              writer = csv.writer(file)
+              for v in validation_accuracy:
+                  writer.writerow([str(v)])
+          finally:
+            file.close()
+            print('   done.')
 
 
     # final test
