@@ -3,14 +3,15 @@ import os
 
 def main():
     
-    # Fix Config
+    # Fix Config so that it uses the current users
+    # working directory
     cwd = os.getcwd()
     config = open('config.ini', 'r+')
     config.truncate(0) # need '0' when using r+
     config.write('[Config1]\n')
-    config.write(cwd + '/weights\n')
-    config.write(cwd + '/summaries\n')
-    config.write(cwd + '/visualization\n')
+    config.write('dir_ckpt = ' + cwd + '/weights/\n')
+    config.write('dir_summaries = ' + cwd + '/summaries/\n')
+    config.write('dir_visualization = ' + cwd + '/visualization/\n')
     config.close()
 
 
