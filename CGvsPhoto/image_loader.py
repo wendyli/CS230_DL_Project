@@ -526,7 +526,8 @@ class Database_loader :
                         exp = Image.fromarray((batch[0][j]*255).astype(np.uint8).reshape(self.size, self.size))
                     else:
                         exp = Image.fromarray((batch[0][j]*255).astype(np.uint8).reshape(self.size, self.size, self.nb_channels))
-                    exp.save(export_path + '/train/' + name_class + '/' + 'train' + str(i) + '.jpg')
+                    final_path = export_path + 'train/' + name_class + '/' + 'train' + str(i) + '.jpg'
+                    exp.save(final_path)
                     i+=1
 
             print(str(i) + " images exported")

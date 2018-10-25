@@ -115,9 +115,9 @@ def createPatchedDatabase(database):
     
     # export a patch database
     DB.export_database(target_patches,
-                       nb_train = 10000,
-                       nb_test = 8000,
-                       nb_validation = 1000)
+                       nb_train = 80000,
+                       nb_test = 4000,
+                       nb_validation = 2000)
 
 
 # Program Entry Point
@@ -133,6 +133,14 @@ def main():
     jpegCompression = input("Enter JPEG Compression Value: ")
     assert isinstance(jpegCompression, int)
     print 'JPEG Compression: ', jpegCompression
+
+    justCreatePatch = input("Just create patch? 1/0: ")
+    assert isinstance(justCreatePatch, int)
+
+    # Just skip towards patch creation and exit
+    if justCreatePatch == 1: 
+        createPatchedDatabase(database)
+        return
 
     # Make sure the database directory exists
     make_dirs(database)
