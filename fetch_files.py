@@ -56,7 +56,7 @@ def pullAndConvert(database, filename, directory, outputdir, jpegCompression):
             # is not overwhelmed
             if line_count >= 15 or not size: # When size == 0, we know we are on the last line
                 # Convert .NEF files into 8-bit RGB images and save in "results" dir
-                # Using the LibRaw API to extract the iamge data and the SFML framework
+                # Using the LibRaw API to extract the image data and the SFML framework
                 # to save out the image as a PNG
                 cmd = 'NEFConverter/NEFConverter/bin/NEFConverter' + ' ' + directory + '/'
                 os.system(cmd)
