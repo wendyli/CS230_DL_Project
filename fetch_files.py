@@ -103,6 +103,9 @@ def construct_CGI(source_CG, target_dir, nb_per_class = 1800, validation_proport
     print("CG Images all moved")
 
 
+# Converts the full-sized database into 
+# a patched database with cropped 100x100
+# images taken from the full sized ones.
 def createPatchedDatabase(database):
     # wanted size for the patches
     image_size = 100
@@ -137,7 +140,10 @@ def main():
     justCreatePatch = input("Just create patch? 1/0: ")
     assert isinstance(justCreatePatch, int)
 
-    # Just skip towards patch creation and exit
+    # Just skip over downloading images and creating the original
+    # full-sized database, and just skip to making the patched 
+    # database. Only works if you already have your full-sized
+    # database created. 
     if justCreatePatch == 1: 
         createPatchedDatabase(database)
         return
