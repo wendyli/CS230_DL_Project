@@ -118,7 +118,7 @@ def createPatchedDatabase(database):
     
     # export a patch database
     DB.export_database(target_patches,
-                       nb_train = 80000,
+                       nb_train = 40000,
                        nb_test = 4000,
                        nb_validation = 2000)
 
