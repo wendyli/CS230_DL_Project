@@ -29,9 +29,9 @@ def compressAndMove(database, directory, outputdir, jpegCompression):
     # Compress images and save in final database location
     for i in range(numImages):
         outfile = database + outputdir + 'Real/' + final_images[i]
-        print outfile
+        print(outfile)
         image = Image.open(result_dir + final_images[i])
-        image.save(outfile, "JPEG", quality=jpegCompression)
+        image.save(outfile, "PNG", quality=jpegCompression)
 
 
 # This function pulls in all the images from
@@ -43,11 +43,12 @@ def pullAndConvert(database, filename, directory, outputdir, jpegCompression):
     with open(filename) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
+        
         for row in csv_reader:
             size -= len(row)
             file = row[0].split('.')[0] # get rid of .jpg
             cmd = ' wget -N -c http://193.205.194.113/RAISE/NEF/{}.NEF -P {}'.format(file, directory)
-            print cmd
+            print(cmd)
             os.system(cmd)
             line_count = line_count + 1
             
@@ -129,15 +130,17 @@ def main():
     # Choose a name for your database
     database = input("Choose a name for your database (Don't forget to add quotes ;-): ")
     assert isinstance(database, str)
-    print 'Database: ', database
+    print('Database: ', database)
     database = database + '/'
 
     # Read in JPEG compression rate
     jpegCompression = input("Enter JPEG Compression Value: ")
+    jpegCompression = int(jpegCompression)
     assert isinstance(jpegCompression, int)
-    print 'JPEG Compression: ', jpegCompression
+    print('JPEG Compression: ', jpegCompression)
 
     justCreatePatch = input("Just create patch? 1/0: ")
+    justCreatePatch = int(justCreatePatch)
     assert isinstance(justCreatePatch, int)
 
     # Just skip over downloading images and creating the original
