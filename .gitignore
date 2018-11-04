@@ -5,6 +5,7 @@ PatchedDatabase/
 data/train
 data/test
 data/validation
+data/weights
 RawrDatabase/
 RawrDatabase/
 RawrDatabase/
