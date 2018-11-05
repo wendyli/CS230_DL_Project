@@ -25,13 +25,15 @@ def main():
     retrain = input("Should we retrain the model? Enter 1/0: ")
     assert isinstance(retrain, int)
     
+    newVersion = input("Should we use the new version of the model? Enter 1/0: ")
+    
 
     # Create the model based on the *Patched* data
     print('Creating Model.....')
     model = Model(database_path = patched_database, image_size = 100,
                   config = 'Config1', filters = [32, 64],
                   feature_extractor = 'Stats', batch_size = 50,
-                  new_version = True)
+                  new_version = newVersion)
 
     return
                   
