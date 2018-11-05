@@ -6,9 +6,16 @@ from PIL import Image
 def grayscale(batch):
     return tf.image.rgb_to_grayscale(batch)
 
-# This function functions for prepassing as described in the
-# Yao Et. Al Paper
+# This function creates the three highpass filters for the input
+# layer of the neural net as described in the Yao Et. Al Paper.
+# It convolves the input mini batch with all 3 filters with
+# a stride of 2
 def highpassFilter(batch):
+    
+    # If the batch is of RGB images, convert
+    # it to grayscale before applying the filters
+    if batch.shape[3] == 3:
+        batch = grayscale(batch)
     
     # Thre high pass filters as described in the paper
     filters = tf.constant(# Filter 1 - Shape 5x5
