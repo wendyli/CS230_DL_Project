@@ -1,2 +1,3 @@
-model_checkpoint_path: "/Users/Chris/Desktop/CS230/Projects/CS230_DL_Project/weights/NewVersion0.ckpt"
+model_checkpoint_path: "/Users/Chris/Desktop/CS230/Projects/CS230_DL_Project/weights/NewVersion100.ckpt"
 all_model_checkpoint_paths: "/Users/Chris/Desktop/CS230/Projects/CS230_DL_Project/weights/NewVersion0.ckpt"
+all_model_checkpoint_paths: "/Users/Chris/Desktop/CS230/Projects/CS230_DL_Project/weights/NewVersion100.ckpt"

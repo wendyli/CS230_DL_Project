@@ -2,6 +2,7 @@ SourceCG/
 SourceReal/
 Database/
 weights/
+summaries/
 PatchedDatabase/
 data/train
 data/test
