@@ -17,6 +17,7 @@ import matplotlib.gridspec as gridspec
 import matplotlib.colors as mcolors
 import csv
 import configparser
+from filter_prepass import grayscale, highpassFilter
 
 import numpy as np
 
@@ -300,7 +301,7 @@ class Model:
 
     print('   create model ...')
     # input layer. One entry is a float size x size, 3-channels image. 
-    # None means that the number of such vector can be of any lenght.
+    # None means that the number of such vector can be of any length.
 
     if feature_extractor == 'Hist': 
       print('   Model with histograms.')
@@ -313,13 +314,24 @@ class Model:
     with graph.as_default():
 
       with tf.name_scope('Input_Data'):
+        print("Num Starting channels: ", self.nb_channels)
         x = tf.placeholder(tf.float32, [None, self.image_size, self.image_size, self.nb_channels])
         self.x = x
         # reshape the input data:
         x_image = tf.reshape(x, [-1,self.image_size, self.image_size, self.nb_channels])
         with tf.name_scope('Image_Visualization'):
           tf.summary.image('Input_Data', x_image)
-        
+    
+    
+        # New code that adds the highpass filter to the input model
+        if not self.only_green:
+            print("Convert to grayscale and add highpass filter")
+            print ("Starting Image dimensions: ", x_image.shape)
+            x_image = highpassFilter(grayscale(x_image))
+            self.image_size = x_image.shape[1]
+            print ("After Image dimensions: ", x_image.shape)
+    
+      
 
       # first conv net layer
       if self.remove_context:

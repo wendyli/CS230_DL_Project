@@ -27,21 +27,23 @@ def main():
     
 
     # Create the model based on the *Patched* data
-    print 'Creating Model.....'
+    print('Creating Model.....')
     model = Model(database_path = patched_database, image_size = 100,
                   config = 'Config1', filters = [32, 64],
-                  feature_extractor = 'Stats', batch_size = 50)
+                  feature_extractor = 'Stats', batch_size = 50,
+                  only_green = False) 
 
+    return
                   
     if retrain > 0:
-        print 'Training Model....'
+        print('Training Model....')
         model.train(nb_train_batch = 1500,
                     nb_test_batch = 80,
                     nb_validation_batch = 40)
 
     
     # You must test on the FULL IMAGE version of the database
-    print 'Testing Model...'
+    print('Testing Model...')
     test_data_path = database + '/test/'
     model.test_total_images(test_data_path = test_data_path,
                             nb_images = 720, decision_rule = 'weighted_vote')
