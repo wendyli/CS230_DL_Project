@@ -56,7 +56,8 @@ def highpassFilter(batch):
 
 
 
-# For Testing purposes
+# For Testing purposes, to see if the above two functions
+# are working properly
 def main():
     print("Running High Pass Filter Test!")
     
@@ -96,13 +97,19 @@ def main():
                          shape = [1,10,10,3])
                          
                          
-    output = highpassFilter(grayscale(batch))
+    # Make grayscale
+    grayBatch = grayscale(batch)
+    print("GrayBatch shape: ", grayBatch.shape)
     
-    # For now, make session
+    # Apply highpass filters
+    output = highpassFilter(grayBatch)
+    
+    # Evaluate
     sess = tf.Session()
     with sess.as_default():
         print(output.eval())
     
+    # Print results
     print(output)
 
 if __name__== "__main__":
