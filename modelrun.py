@@ -39,6 +39,7 @@ def main():
     model = Model(database_path = patched_database, image_size = 100,
                   config = 'Config1', filters = [32, 64],
                   feature_extractor = 'Stats', batch_size = 50,
+                  using_GPU = useGPU,
                   new_version = newVersion)
                   
     if retrain > 0:
