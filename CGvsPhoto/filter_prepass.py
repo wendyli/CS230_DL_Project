@@ -37,20 +37,39 @@ def highpassFilter(batch):
                           shape = [5,5,1,3],
                           
                           # Name
-                          name = 'HighpassFilters'
+                          name = 'HighpassFilters',
+                          
+                          #type,
+                          dtype = tf.float32
                         )
                         
                         
-                        
-    with sess.as_default():
-        print(filters.eval())
+
+    if batch is not None:
+        output = tf.nn.conv2d(batch, filters, strides = [1,2,2,1], padding = 'SAME')
+        with sess.as_default():
+            print(filters.eval())
+
 
 
 
 # For Testing purposes
 def main():
     print("Running High Pass Filter Test!")
-    highpassFilter(None)
+    
+    batch = tf.constant([1,1,1,1,1,1,1,1,1,1,
+                         1,1,1,1,1,1,1,1,1,1,
+                         1,1,1,1,1,1,1,1,1,1,
+                         1,1,1,1,1,1,1,1,1,1,
+                         1,1,1,1,1,1,1,1,1,1,
+                         1,1,1,1,1,1,1,1,1,1,
+                         1,1,1,1,1,1,1,1,1,1,
+                         1,1,1,1,1,1,1,1,1,1,
+                         1,1,1,1,1,1,1,1,1,1,
+                         1,1,1,1,1,1,1,1,1,1],
+                         dtype=tf.float32,
+                         shape = [1,10,10,1])
+    highpassFilter(batch)
 
 if __name__== "__main__":
     main()
