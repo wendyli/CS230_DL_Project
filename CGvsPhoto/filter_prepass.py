@@ -48,8 +48,10 @@ def highpassFilter(batch):
     if batch is not None:
         output = tf.nn.conv2d(batch, filters, strides = [1,2,2,1], padding = 'SAME')
         with sess.as_default():
-            print(filters.eval())
+            output.eval()
+        return output
 
+    return None
 
 
 
@@ -69,7 +71,8 @@ def main():
                          1,1,1,1,1,1,1,1,1,1],
                          dtype=tf.float32,
                          shape = [1,10,10,1])
-    highpassFilter(batch)
+    output = highpassFilter(batch)
+    print(output)
 
 if __name__== "__main__":
     main()
