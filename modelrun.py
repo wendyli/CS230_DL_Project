@@ -21,12 +21,18 @@ def main():
     database = database + '/'
     patched_database = 'Patched' + database
 
-    
+    # If yes model will generate new weights
     retrain = input("Should we retrain the model? Enter 1/0: ")
     assert isinstance(retrain, int)
     
-    newVersion = input("Should we use the new version of the model? Enter 1/0: ")
+    # This will allow the model to use CUDA to train
+    useGPU = input("Should we use the GPU? Enter 1/0: ")
+    assert isinstance(useGPU, int)
     
+    # If yes, use the updated version of the model used by our project
+    newVersion = input("Should we use the new version of the model? Enter 1/0: ")
+    assert isinstance(newVersion, int)
+
 
     # Create the model based on the *Patched* data
     print('Creating Model.....')
@@ -34,12 +40,10 @@ def main():
                   config = 'Config1', filters = [32, 64],
                   feature_extractor = 'Stats', batch_size = 50,
                   new_version = newVersion)
-
-    return
                   
     if retrain > 0:
         print('Training Model....')
-        model.train(nb_train_batch = 1500,
+        model.train(nb_train_batch = 15000,
                     nb_test_batch = 80,
                     nb_validation_batch = 40)
 
