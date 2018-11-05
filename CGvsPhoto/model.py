@@ -209,7 +209,7 @@ class Model:
   def __init__(self, database_path, image_size, config = 'Personal', filters = [32, 64],
               feature_extractor = 'Stats', remove_context = False, 
               nbins = 10, remove_filter_size = 3, batch_size = 50, 
-              using_GPU = False, only_green = True):
+              using_GPU = False, only_green = True, new_version = False):
     """Defines a model for single-image classification
 
     :param database_path: Absolute path to the default patch database (training, validation and testings are performed on this database)
@@ -266,6 +266,9 @@ class Model:
     self.remove_context = remove_context
     self.remove_filter_size = remove_filter_size
     self.only_green = only_green
+    self.new_version = new_version
+    if self.new_version:
+        self.only_green = False
 
     # getting the database
     self.import_database()
@@ -324,7 +327,7 @@ class Model:
     
     
         # New code that adds the highpass filter to the input model
-        if not self.only_green:
+        if self.new_version:
             print("Convert to grayscale and add highpass filter")
             print ("Starting Image dimensions: ", x_image.shape)
             x_image = highpassFilter(grayscale(x_image))
