@@ -1179,7 +1179,7 @@ class Model:
           f1_score = 2.0*float(total_precision*total_recall) /float(total_precision + total_recall)
           print('\n_______________________________________________________')
           print(str(i+1) + '/' + str(nb_images) + ' images treated.')
-          print('Accuracy : ' + str(round(100*accuracy/(i+1), 2)) + '%')
+          print('Accuracy : ' + str(round(100.0*float(accuracy)/float(i+1), 2)) + '%')
           if tp + fp != 0:
             print('Precision : ' + str(round(total_precision, 2)) + '%')
           if nb_CGG != 0:
@@ -1202,10 +1202,10 @@ class Model:
     f1_score = 2.0*float(total_precision*total_recall) / float(total_precision + total_recall)
     
     print('\n_______________________________________________________')
-    print('Final Accuracy : ' + str(round(100*accuracy/(nb_images), 3)) + '%')
+    print('Final Accuracy : ' + str(round(100.0*float(accuracy)/float(nb_images), 3)) + '%')
     print('Final Precision : ' + str(round(total_precision, 3)) + '%')
     print('Final Recall : ' + str(round(total_recall, 3)) + '%')
-    print('Final AUC : ' + str(round(100*auc(fpr, tpr), 3)) + '%')
+    print('Final AUC : ' + str(round(100.0*auc(fpr, tpr), 3)) + '%')
     print('Final F1 Score: ' + str(round(f1_score, 3)) + '%')
     print('_______________________________________________________\n')
 

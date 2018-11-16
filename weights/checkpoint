@@ -1,2 +1,2 @@
-model_checkpoint_path: "/Users/Chris/Desktop/CS230/Projects/CS230_DL_Project/weights/Retest_best.ckpt"
-all_model_checkpoint_paths: "/Users/Chris/Desktop/CS230/Projects/CS230_DL_Project/weights/Retest_best.ckpt"
+model_checkpoint_path: "/Users/Chris/Desktop/CS230/Projects/CS230_DL_Project/weights/PushingLimit_best.ckpt"
+all_model_checkpoint_paths: "/Users/Chris/Desktop/CS230/Projects/CS230_DL_Project/weights/PushingLimit_best.ckpt"
