@@ -1174,9 +1174,9 @@ class Model:
                                    prob_map = save_images)
 
         if ((i+1)%10 == 0):
-          total_precision = 100*tp/(tp + fp)
-          total_recall = 100*tp/nb_CGG
-          f1_score = 2*total_precision*total_recall / (total_precision + total_recall)
+          total_precision = 100.0*float(tp)/float(tp + fp)
+          total_recall = 100.0*float(tp)/float(nb_CGG)
+          f1_score = 2.0*float(total_precision*total_recall) /float(total_precision + total_recall)
           print('\n_______________________________________________________')
           print(str(i+1) + '/' + str(nb_images) + ' images treated.')
           print('Accuracy : ' + str(round(100*accuracy/(i+1), 2)) + '%')
@@ -1197,9 +1197,9 @@ class Model:
     print('Saving tpr and fpr in file : ' + filename)
     pickle.dump((fpr,tpr), open(filename, 'wb'))
 
-    total_precision = 100*tp/(tp + fp)
-    total_recall = 100*tp/nb_CGG
-    f1_score = 2*total_precision*total_recall / (total_precision + total_recall)
+    total_precision = 100.0*tp/float(tp + fp)
+    total_recall = 100.0*tp/float(nb_CGG)
+    f1_score = 2.0*float(total_precision*total_recall) / float(total_precision + total_recall)
     
     print('\n_______________________________________________________')
     print('Final Accuracy : ' + str(round(100*accuracy/(nb_images), 3)) + '%')
