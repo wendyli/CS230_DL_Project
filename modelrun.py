@@ -37,14 +37,14 @@ def main():
     # Create the model based on the *Patched* data
     print('Creating Model.....')
     model = Model(database_path = patched_database, image_size = 100,
-                  config = 'Config1', filters = [32, 64],
+                  config = 'Config1', filters = [64, 128], #filters = [8,16,32,64,128],   #filters = [64, 128],
                   feature_extractor = 'Stats', batch_size = 50,
                   using_GPU = useGPU,
                   new_version = newVersion)
                   
     if retrain > 0:
         print('Training Model....')
-        model.train(nb_train_batch = 15000,
+        model.train(nb_train_batch = 30000,
                     nb_test_batch = 80,
                     nb_validation_batch = 40)
 

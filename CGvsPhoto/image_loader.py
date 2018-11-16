@@ -198,6 +198,7 @@ class Database_loader :
         if self.size == None: 
             image = image.reshape(image.shape[0], image.shape[1], self.nb_channels)
         else: 
+            #print("Filename: ", file_name)
             image = image.reshape(self.size, self.size, self.nb_channels)
 
         # build class label

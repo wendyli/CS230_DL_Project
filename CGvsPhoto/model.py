@@ -94,10 +94,20 @@ def conv2d(x, W):
   """Returns the 2D convolution between input x and the kernel W"""  
   return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
  
+def max_pool_nxn(x, n, s):
+  """Returns the result of max-pooling on input x with a nxn window""" 
+  return tf.nn.max_pool(x, ksize=[1, n, n, 1],
+                           strides=[1, s, s, 1], padding='SAME')
+
 def max_pool_2x2(x):
   """Returns the result of max-pooling on input x with a 2x2 window""" 
   return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],
                            strides=[1, 2, 2, 1], padding='SAME')
+
+def avg_pool_nxn(x, n, s):
+  """Returns the result of average-pooling on input x with a nxn window""" 
+  return tf.nn.avg_pool(x, ksize=[1, n, n, 1],
+                           strides=[1, s, s, 1], padding='SAME')
 
 def avg_pool_2x2(x):
   """Returns the result of average-pooling on input x with a 2x2 window""" 
@@ -331,8 +341,6 @@ class Model:
             print("Convert to grayscale and add highpass filter")
             print ("Starting Image dimensions: ", x_image.shape)
             x_image = highpassFilter(grayscale(x_image))
-            self.image_size = x_image.shape[1]
-            print ("After Image dimensions: ", x_image.shape)
     
       
 
@@ -375,6 +383,12 @@ class Model:
       image_summaries(self.h_convs[0], 'hconv1')
       filter_summary(self.W_convs[0], 'Wconv1')
 
+      # Yao Data
+      pool_sizes = [5, 5, 5, 5, 20]
+      stride_sizes = [2, 2, 2, 2, 1]
+      filter_sizes = [5, 5, 3, 3, 1]
+      filter_nums = [8, 16, 32, 64, 128]
+
       for i in range(1, nl):
         print('   Creating layer ' + str(i+1) + ' - Shape : ' + str(self.filter_size) + 'x' + 
             str(self.filter_size) + 'x' + str(nf[i-1]) + 'x' + str(nf[i]))
@@ -388,8 +402,10 @@ class Model:
             b_conv2 = bias_variable([nf[i]])
             self.b_convs.append(b_conv2)
 
-          h_conv2 = tf.nn.relu(conv2d(self.h_convs[i-1], W_conv2) + b_conv2, 
+          h_conv2 = tf.nn.relu(conv2d(tf.layers.batch_normalization(self.h_convs[i-1]), W_conv2) + b_conv2, 
                                name = 'Activated_2')
+
+          #h_conv2 = avg_pool_nxn(h_conv2, pool_sizes[i], stride_sizes[i])
 
           self.h_convs.append(h_conv2)    
 
@@ -692,7 +708,10 @@ class Model:
                                 self.dir_ckpt + ') : ')
         saver.restore(sess, self.dir_ckpt + file_to_restore)
         print('\n   Model restored\n')
-        
+      
+      
+      # Save when you hit the best
+      best_validation = 0
 
       # Train
       print('   train ...')
@@ -725,6 +744,14 @@ class Model:
                                       run_name = run_name,
                                       show_filters = show_filters)
               validation_accuracy.append(v)
+              # Save if current best
+              if v > best_validation:
+                  path_save_batch = path_save  + "_best.ckpt"
+                  print('   saving weights in file : ' + path_save_batch)
+                  saver.save(sess, path_save_batch)
+                  print('   OK')
+                  best_validation = v
+ 
               
           # regular training
 
@@ -734,20 +761,16 @@ class Model:
           feed_dict = {self.x: batch[0], self.y_: batch[1], self.keep_prob: 0.65}
           summary, _ = sess.run([merged, self.train_step], feed_dict = feed_dict)
           train_writer.add_summary(summary, i)
-
-          # Saving weights every 100 batches
+             
+          # Write time every 100 batches
           if i%100 == 0:
+            if batch_clock is not None:
+                time_elapsed = (time.time()-batch_clock)
+                print('   Time last 100 batchs : ', time.strftime("%H:%M:%S",time.gmtime(time_elapsed)))
+                remaining_time = time_elapsed * int((nb_train_batch - i)/100)
+                print('   Remaining time : ', time.strftime("%H:%M:%S",time.gmtime(remaining_time)))
+                batch_clock = time.time()
 
-            path_save_batch = path_save + str(i) + ".ckpt"
-            print('   saving weights in file : ' + path_save_batch)
-            saver.save(sess, path_save_batch)
-            print('   OK')
-            if batch_clock is not None: 
-              time_elapsed = (time.time()-batch_clock)
-              print('   Time last 100 batchs : ', time.strftime("%H:%M:%S",time.gmtime(time_elapsed)))
-              remaining_time = time_elapsed * int((nb_train_batch - i)/100)
-              print('   Remaining time : ', time.strftime("%H:%M:%S",time.gmtime(remaining_time)))
-            batch_clock = time.time()
       
       print('   saving validation accuracy...')
       with open(acc_name, 'w') as file:
@@ -1012,7 +1035,8 @@ class Model:
                         minibatch_size = 25, decision_rule = 'majority_vote',
                         show_images = False,
                         save_images = False,
-                        only_green = True, other_clf = False): 
+                        only_green = True,
+                        new_version = True, other_clf = False):
     """Performs boosting for classifying full-size images.
 
     Decomposes each image into patches (with size = self.image_size), computes the posterior probability of each class
@@ -1037,6 +1061,9 @@ class Model:
     :type only_green: bool
     :type other_clf:bool
     """
+    if new_version:
+        only_green = False
+    
     valid_decision_rule = ['majority_vote', 'weighted_vote']
     if decision_rule not in valid_decision_rule:
       raise NameError(decision_rule + ' is not a valid decision rule.')
@@ -1127,6 +1154,8 @@ class Model:
         else:
           if prediction == 'CGG':
             fp += 1
+          if new_version:
+              original.save('WrongImages/' + image_file)
         print(prediction, label)
 
         if show_images and not save_images:

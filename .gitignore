@@ -2,7 +2,13 @@ SourceCG/
 SourceReal/
 Database/
 weights/
+BestWeights/
+EnhancedDB/
+PatchedEnhancedDB/
+PNGDatabase/
+PatchedPNGDatabase/
 summaries/
+WrongImages/
 PatchedDatabase/
 data/train
 data/test
