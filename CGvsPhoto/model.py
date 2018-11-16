@@ -681,7 +681,7 @@ class Model:
     # computation time tick
     start_clock = time.clock()
     start_time = time.time()
-    batch_clock = None
+    batch_clock = start_time
 
     # start a session
     print('   start session ...')
@@ -1174,13 +1174,17 @@ class Model:
                                    prob_map = save_images)
 
         if ((i+1)%10 == 0):
+          total_precision = 100*tp/(tp + fp)
+          total_recall = 100*tp/nb_CGG
+          f1_score = 2*total_precision*total_recall / (total_precision + total_recall)
           print('\n_______________________________________________________')
           print(str(i+1) + '/' + str(nb_images) + ' images treated.')
           print('Accuracy : ' + str(round(100*accuracy/(i+1), 2)) + '%')
           if tp + fp != 0:
-            print('Precision : ' + str(round(100*tp/(tp + fp), 2)) + '%')
+            print('Precision : ' + str(round(total_precision, 2)) + '%')
           if nb_CGG != 0:
-            print('Recall : ' + str(round(100*tp/nb_CGG,2)) + '%')
+            print('Recall : ' + str(round(total_recall,2)) + '%')
+          print('F1 Score : ' + str(round(f1_score, 2)) + '%')
           print('_______________________________________________________\n')
 
     print(np.array(y))
@@ -1193,11 +1197,16 @@ class Model:
     print('Saving tpr and fpr in file : ' + filename)
     pickle.dump((fpr,tpr), open(filename, 'wb'))
 
+    total_precision = 100*tp/(tp + fp)
+    total_recall = 100*tp/nb_CGG
+    f1_score = 2*total_precision*total_recall / (total_precision + total_recall)
+    
     print('\n_______________________________________________________')
     print('Final Accuracy : ' + str(round(100*accuracy/(nb_images), 3)) + '%')
-    print('Final Precision : ' + str(round(100*tp/(tp + fp), 3)) + '%')
-    print('Final Recall : ' + str(round(100*tp/nb_CGG, 3)) + '%')
+    print('Final Precision : ' + str(round(total_precision, 3)) + '%')
+    print('Final Recall : ' + str(round(total_recall, 3)) + '%')
     print('Final AUC : ' + str(round(100*auc(fpr, tpr), 3)) + '%')
+    print('Final F1 Score: ' + str(round(f1_score, 3)) + '%')
     print('_______________________________________________________\n')
 
   def image_visualization(self, path_save, file_name, images, labels_pred, 
