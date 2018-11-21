@@ -27,6 +27,8 @@
 
 #define CLAMP(v, min, max) if (v < min) { v = min; } else if (v > max) { v = max; }
 
+int global_size = 256;
+
 std::string removeExtension(const std::string &filename)
 {
     std::string::size_type idx = filename.rfind('.');
@@ -119,8 +121,8 @@ int process_image(std::string path, std::string file)
 {
     printf("Process image: %s\n", file.c_str());
     
-    int width = 256;
-    int height = 256;
+    int width = global_size;
+    int height = global_size;
     
     sf::Image srcImage, dstImage;
     if (!srcImage.loadFromFile(path + "/" + file)) {
@@ -179,7 +181,12 @@ int loopImages(std::string path)
 
 int main(int argc, const char * argv[])
 {
-    std::string path(argv[1]); 
+    
+    std::string path(argv[1]);
+    if (argc >= 3) {
+        global_size = atoi(argv[2]);
+    }
+    
     loopImages(path.c_str());
     return 0;
 }
