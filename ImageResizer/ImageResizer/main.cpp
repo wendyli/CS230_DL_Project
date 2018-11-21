@@ -121,14 +121,24 @@ int process_image(std::string path, std::string file)
 {
     printf("Process image: %s\n", file.c_str());
     
-    int width = global_size;
-    int height = global_size;
-    
     sf::Image srcImage, dstImage;
     if (!srcImage.loadFromFile(path + "/" + file)) {
         printf("Could not load image %s\n", file.c_str());
         return 0;
     }
+    
+    int srcWidth = srcImage.getSize().x;
+    int srcHeight = srcImage.getSize().y;
+    
+    int width, height;
+    if (srcWidth > srcHeight) {
+        width = global_size;
+        height = ((float)(srcHeight) / (float)(srcWidth)) * width;
+    } else {
+        height = global_size;
+        width = ((float)srcWidth / (float)srcHeight) * height;
+    }
+    
     
     dstImage.create(width, height);
     
