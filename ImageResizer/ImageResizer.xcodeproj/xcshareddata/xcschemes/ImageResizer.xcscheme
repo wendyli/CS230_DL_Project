@@ -63,7 +63,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/Chris/Desktop/ResizeTest 128"
+            argument = "/Users/Chris/Desktop/ResizeTest 256"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
