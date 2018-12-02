@@ -37,7 +37,7 @@ def main():
     # Create the model based on the *Patched* data
     print('Creating Model.....')
     model = Model(database_path = patched_database, image_size = 100,
-                  config = 'Config1', filters = [64, 128], #filters = [8,16,32,64,128],   #filters = [64, 128],
+                  config = 'Config1', filters = [80, 96, 64], #filters = [8,16,32,64,128],   #filters = [64, 128],
                   feature_extractor = 'Stats', batch_size = 50,
                   using_GPU = useGPU,
                   new_version = newVersion)
