@@ -758,7 +758,7 @@ class Model:
 
 
           batch = self.data.get_next_train_batch(self.batch_size, False, True, True)
-          feed_dict = {self.x: batch[0], self.y_: batch[1], self.keep_prob: 0.65}
+          feed_dict = {self.x: batch[0], self.y_: batch[1], self.keep_prob: 0.79}
           summary, _ = sess.run([merged, self.train_step], feed_dict = feed_dict)
           train_writer.add_summary(summary, i)
              
